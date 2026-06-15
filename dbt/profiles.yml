@@ -1,0 +1,12 @@
+tourism_invest:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('DBT_HOST', 'localhost') }}"
+      port: "{{ env_var('DBT_PORT', '5432') | int }}"
+      user: "{{ env_var('DBT_USER', 'airbnb') }}"
+      password: "{{ env_var('DBT_PASSWORD', 'airbnb') }}"
+      dbname: "{{ env_var('DBT_DBNAME', 'airbnb_invest') }}"
+      schema: "{{ env_var('DBT_SCHEMA', 'analytics') }}"
+      threads: 4

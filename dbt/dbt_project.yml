@@ -1,0 +1,21 @@
+name: tourism_invest
+version: "1.0.0"
+config-version: 2
+
+profile: tourism_invest
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  tourism_invest:
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: analytics
+      +materialized: table

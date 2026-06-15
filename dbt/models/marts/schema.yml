@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: fact_real_estate_transactions
+    columns:
+      - name: transaction_id
+        data_tests:
+          - not_null
+  - name: tourism_zone_features
+    columns:
+      - name: zone_id
+        data_tests:
+          - not_null
+  - name: location_tourism_score_latest
+    columns:
+      - name: zone_id
+        data_tests:
+          - not_null

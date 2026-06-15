@@ -1,0 +1,119 @@
+datasets:
+  dvf_mutations:
+    path_glob: "data/external/dvf/*"
+    format: "csv"
+    delimiter: "|"
+    table_name: "dvf_mutations"
+    required_for_mvp: true
+    description: "DVF CSV/TXT export, often pipe-delimited"
+    expected_columns:
+      - date_mutation
+      - nature_mutation
+      - valeur_fonciere
+      - code_postal
+      - code_commune
+      - nom_commune
+      - code_departement
+      - type_local
+      - surface_reelle_bati
+      - surface_terrain
+      - nombre_pieces_principales
+      - longitude
+      - latitude
+      - id_parcelle
+  tourism_poi:
+    path_glob: "data/external/tourism/poi/*"
+    format: "csv"
+    delimiter: ","
+    table_name: "tourism_poi"
+    required_for_mvp: true
+    description: "Structured tourism POI export with code_commune, poi_category, latitude, longitude"
+    expected_columns:
+      - code_commune
+      - nom_commune
+      - poi_category
+      - poi_subcategory
+      - poi_label
+      - latitude
+      - longitude
+  tourism_labels:
+    path_glob: "data/external/tourism/labels/*"
+    format: "csv"
+    delimiter: ","
+    table_name: "tourism_labels"
+    required_for_mvp: true
+    description: "Commune-level tourism labels such as littoral, mountain, park, tourism station, heritage village"
+    expected_columns:
+      - code_commune
+      - nom_commune
+      - is_littoral
+      - is_mountain
+      - is_lake_area
+      - is_natural_park
+      - is_classified_tourism_station
+      - is_classified_village
+      - is_heritage_village
+  mobility_access:
+    path_glob: "data/external/accessibility/*"
+    format: "csv"
+    delimiter: ","
+    table_name: "mobility_access"
+    required_for_mvp: true
+    description: "Commune-level accessibility metrics such as minutes_to_gare or drive_time_to_metropole"
+    expected_columns:
+      - code_commune
+      - nom_commune
+      - minutes_to_gare
+      - minutes_to_motorway
+      - minutes_to_airport
+      - drive_time_to_metropole
+  tourism_supply_proxy:
+    path_glob: "data/external/tourism/supply/*"
+    format: "csv"
+    delimiter: ","
+    table_name: "tourism_supply_proxy"
+    required_for_mvp: false
+    description: "Accommodation or competitor supply proxy at commune level"
+    expected_columns:
+      - code_commune
+      - nom_commune
+      - accommodation_count
+      - hotel_count
+      - camping_count
+      - guest_house_count
+      - holiday_village_count
+  seasonal_population:
+    path_glob: "data/external/demography/*"
+    format: "csv"
+    delimiter: ","
+    table_name: "seasonal_population"
+    required_for_mvp: false
+    description: "Seasonal population or intensity metrics at commune level"
+    expected_columns:
+      - code_commune
+      - nom_commune
+      - seasonal_population_ratio
+      - peak_population_multiplier
+  geographic_reference:
+    path_glob: "data/external/reference/*"
+    format: "csv"
+    delimiter: ","
+    table_name: "geographic_reference"
+    required_for_mvp: false
+    description: "Reference lookup for commune labels, departements and regions"
+    expected_columns:
+      - code_commune
+      - nom_commune
+      - code_departement
+      - nom_departement
+      - nom_region
+  cadastre_reference:
+    path_glob: "data/external/cadastre/*"
+    format: "parquet"
+    table_name: "cadastre_reference"
+    required_for_mvp: false
+    description: "Optional cadastral extracts converted to parquet"
+    expected_columns:
+      - id_parcelle
+      - section
+      - code_commune

@@ -1,0 +1,108 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    platform: linux/amd64
+    container_name: airbnb_postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init_warehouse.sql:/docker-entrypoint-initdb.d/00-init_warehouse.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: airbnb_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  airflow:
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    container_name: airbnb_airflow
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    env_file:
+      - .env
+    environment:
+      AIRFLOW_UID: ${AIRFLOW_UID}
+      AIRFLOW__CORE__LOAD_EXAMPLES: ${AIRFLOW__CORE__LOAD_EXAMPLES}
+      AIRFLOW__CORE__EXECUTOR: ${AIRFLOW__CORE__EXECUTOR}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+      PYTHONPATH: /opt/project
+      DBT_HOST: ${DBT_HOST}
+      DBT_PORT: ${DBT_PORT}
+      DBT_USER: ${DBT_USER}
+      DBT_PASSWORD: ${DBT_PASSWORD}
+      DBT_DBNAME: ${DBT_DBNAME}
+      DBT_SCHEMA: ${DBT_SCHEMA}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: airflow standalone
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/opt/project
+      - airflow_home:/opt/airflow
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/dashboard/Dockerfile
+    container_name: airbnb_dashboard
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DEFAULT_BENCHMARK_SURFACE_M2: ${DEFAULT_BENCHMARK_SURFACE_M2}
+    command: streamlit run /opt/project/dashboard/streamlit_app/Home.py --server.address=0.0.0.0 --server.port=${STREAMLIT_SERVER_PORT}
+    ports:
+      - "${STREAMLIT_SERVER_PORT}:8501"
+    volumes:
+      - ./:/opt/project
+
+volumes:
+  postgres_data:
+  airflow_home:
+  minio_data:

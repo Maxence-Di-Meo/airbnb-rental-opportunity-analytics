@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: dvf_mutations
+      - name: tourism_poi
+      - name: tourism_labels
+      - name: mobility_access
+      - name: tourism_supply_proxy
+      - name: seasonal_population
+      - name: geographic_reference
+
+models:
+  - name: stg_dvf_transactions
+    columns:
+      - name: transaction_id
+        data_tests:
+          - not_null
+  - name: stg_tourism_poi
+    columns:
+      - name: code_commune
+        data_tests:
+          - not_null
+  - name: stg_tourism_labels
+    columns:
+      - name: code_commune
+        data_tests:
+          - not_null
+  - name: stg_mobility_access
+    columns:
+      - name: code_commune
+        data_tests:
+          - not_null
