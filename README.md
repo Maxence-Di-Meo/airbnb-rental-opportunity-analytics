@@ -1,6 +1,6 @@
-# AirbnbJO / Tourism Rental Analytics
+# Airbnb Rental Opportunity Analytics
 
-Plateforme locale de data engineering / analytics issue d'un projet d'analyse des coûts et opportunités de location courte durée autour des Jeux Olympiques. La version actuelle généralise l'idée vers le scoring du potentiel d'un projet de **location saisonniere rurale et touristique** en France a partir de `DVF`, de donnees touristiques territoriales, d'accessibilite et d'attractivite geographique.
+Plateforme locale de data engineering / analytics pour scorer le potentiel d'un projet de **location saisonniere rurale et touristique** en France a partir de `DVF`, de donnees touristiques territoriales, d'accessibilite et d'attractivite geographique.
 
 ## Ce que contient ce repo
 - `docker-compose.yml` pour lancer `PostGIS`, `MinIO`, `Airflow` et `Streamlit`
@@ -83,7 +83,7 @@ docker compose exec airflow pytest -q
 5. Le dashboard affiche un ranking de communes rurales/touristiques selon plusieurs profils investisseurs.
 
 ## Logique metier
-Le projet ne cherche plus a mesurer "Airbnb reel" sur toute la France. Il estime un **potentiel locatif touristique rural** en combinant:
+Le projet ne cherche pas a mesurer "Airbnb reel" sur toute la France. Il estime un **potentiel locatif touristique rural** en combinant:
 - coût d'entree immobilier
 - attractivite naturelle et patrimoniale
 - accessibilite
